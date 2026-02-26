@@ -36,15 +36,15 @@ io.on("connection", (socket) => {
   // ------------------------------
   // PLAYER CREATES A ROOM
   // ------------------------------
-  socket.on("create_room", (roomData) => {
-    if (!isValidRoomName(roomData)) return;
+  socket.on("create_room", (roomName) => {
+    if (!isValidRoomName(roomName)) return;
 
-    if (!rooms[roomData.name]) {
-      rooms[roomData.name] = { players: {}, blocks: {},type: roomData?.type ?? "custom" };
-      console.log(`Room created: ${roomData.name}`);
+    if (!rooms[roomName]) {
+      rooms[roomName] = { players: {} };
+      console.log(`Room created: ${roomName}`);
     }
 
-    joinRoom(socket, roomData.name);
+    joinRoom(socket, roomName);
   });
 
   // ------------------------------
@@ -56,6 +56,10 @@ io.on("connection", (socket) => {
 
     joinRoom(socket, roomName);
   });
+
+  // ------------------------------
+  // PLAYER UPDATES MOVEMENT
+  // ------------------------------
   socket.on("updateData", (data) => {
     let roomName = socket.roomName;
     if (!roomName) return;
@@ -64,10 +68,19 @@ io.on("connection", (socket) => {
     if (!room) return;
 
     if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateP", {
+      room.players[socket.id] = {...data};
+
+      // Send update to players IN THIS ROOM ONLY
+      // socket.to(roomName).emit("update", {
+      //   id: socket.id,
+      //   x: data.x,
+      //   y: data.y,
+      //   angle: data.angle,
+      //   cRoom: data.cRoom
+      // });
+      socket.to(roomName).emit("update", {
         id: socket.id,
-        playerData: { ...data },
+        playerData: {...data}
       });
     }
   });
@@ -130,7 +143,7 @@ function joinRoom(socket, roomName) {
   rooms[roomName].players[socket.id] = {
     x: 0,
     y: 0,
-    cRoom: roomName,
+    cRoom: roomName
   };
 
   // Send existing players in this room to the newcomer
@@ -141,7 +154,7 @@ function joinRoom(socket, roomName) {
     id: socket.id,
     x: 0,
     y: 0,
-    cRoom: roomName,
+    cRoom: roomName
   });
 
   // Update rooms list for lobby
