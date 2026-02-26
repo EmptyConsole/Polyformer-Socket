@@ -56,100 +56,6 @@ io.on("connection", (socket) => {
 
     joinRoom(socket, roomName);
   });
-
-  // ------------------------------
-  // PLAYER UPDATES MOVEMENT
-  // ------------------------------
-  socket.on("updateCursor", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("update", {
-        id: socket.id,
-        cursorData: { ...data },
-      });
-    }
-  });
-  socket.on("updateBlocks", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateBl", {
-        id: socket.id,
-        blockData: { ...data },
-      });
-    }
-  });
-  socket.on("updateChat", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateCh", {
-        id: socket.id,
-        chatData: { ...data },
-      });
-    }
-  });
-  socket.on("updateDamage", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateD", {
-        id: socket.id,
-        damageData: { ...data },
-      });
-    }
-  });
-  socket.on("removeBullet", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateRb", {
-        id: socket.id,
-        bulletData: { ...data },
-      });
-    }
-  });
-  socket.on("updateBullet", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateB", {
-        id: socket.id,
-        bulletData: { ...data },
-      });
-    }
-  });
   socket.on("updateData", (data) => {
     let roomName = socket.roomName;
     if (!roomName) return;
@@ -162,37 +68,6 @@ io.on("connection", (socket) => {
       socket.to(roomName).emit("updateP", {
         id: socket.id,
         playerData: { ...data },
-      });
-    }
-  });
-  //updates the waiting room with the current player data, so that when a new player joins they get the most recent data
-  socket.on("updateWait", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("updateW", {
-        id: socket.id,
-        waitData: { ...data },
-      });
-    }
-  });
-  socket.on("getRooms", (data) => {
-    let roomName = socket.roomName;
-    if (!roomName) return;
-
-    let room = rooms[roomName];
-    if (!room) return;
-
-    if (room.players[socket.id]) {
-      room.players[socket.id] = { ...data };
-      socket.to(roomName).emit("gotRooms", {
-        id: socket.id,
-        roomData: rooms,
       });
     }
   });
